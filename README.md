@@ -39,7 +39,7 @@ An AI-driven multi-agent workflow that automates HubSpot CRM operations using na
 ## 🛠 Prerequisites
 
 - Python 3.10+
-- Gemini API key
+- Gemini API key (due to Free we can use any LLM)
 - HubSpot API key
 - Mailjet credentials
 - PostgreSQL database (optional)
@@ -199,4 +199,5 @@ MIT License - see [LICENSE](LICENSE)
 - Open an issue
 - Email: metaisolpak@gmail.com
 - Documentation: [Wiki](wiki)
+
 
