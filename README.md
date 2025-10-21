@@ -14,6 +14,7 @@ graph LR
 
 Detailed Component Flow
 1. Graph Building (LangGraph)
+   
 def build_graph():
     """Builds the workflow graph with LangGraph."""
     nodes = {
@@ -28,6 +29,7 @@ def build_graph():
     orchestrator_node, hubspot_node, email_node, error_handler_node
     
     # Define routing logic
+    
     graph.add_edge("orchestrator", "hubspot")
     graph.add_conditional_edges(
         "hubspot",
@@ -87,6 +89,7 @@ User Input:
 "Create a new contact for John Doe with email john@example.com"
 
 Orchestrator Output:
+
 {
     "intent": "create_contact",
     "payload": {
@@ -101,6 +104,7 @@ Orchestrator Output:
 
 HubSpot Result:
 
+
 {
     "success": true,
     "id": "51",
@@ -113,6 +117,7 @@ HubSpot Result:
         }
     }
 }
+
 
 
 Email Notification:
@@ -210,6 +215,7 @@ Mailgun: mailgun_api_key, mailgun_domain
 You may alternatively set environment variables (recommended for secrets):
 GEMINI_API_KEY, HUBSPOT_API_KEY, SENDER_EMAIL, SMTP_*, MAILGUN_*
 The app uses utils.load_config which will prefer environment variables over config.json.
+
 
 
 
