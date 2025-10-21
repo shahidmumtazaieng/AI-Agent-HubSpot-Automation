@@ -12,4 +12,6 @@ tenacity
 black
 flake8
 pre-commit
+fastapi
+uvicorn
 mailjet_rest
