@@ -4,8 +4,8 @@ In this project we implements an AI-driven multi-agent workflow that parses natu
 
 AI Agent HubSpot Automation - Workflow Architecture
 graph LR
+
     A[User Query] --> B[Orchestrator Agent]
-    
     B --> C[HubSpot Agent]
     C --> D[Email Agent]
     D --> E[End]
@@ -210,5 +210,6 @@ Mailgun: mailgun_api_key, mailgun_domain
 You may alternatively set environment variables (recommended for secrets):
 GEMINI_API_KEY, HUBSPOT_API_KEY, SENDER_EMAIL, SMTP_*, MAILGUN_*
 The app uses utils.load_config which will prefer environment variables over config.json.
+
 
 
