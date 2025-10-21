@@ -5,12 +5,49 @@ In this project we implements an AI-driven multi-agent workflow that parses natu
 
 
 
-AI Agent HubSpot Automation - Workflow Architecture
-graph LR
-    A[User Query] --> B[Orchestrator Agent]
-    B --> C[HubSpot Agent]
-    C --> D[Email Agent]
-    D --> E[End]
+![Workflow: AI Agent HubSpot Automation](assets/workflow.svg)
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 220" width="1000" height="220" role="img" aria-label="AI Agent HubSpot Automation workflow">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2b6cb0"/>
+    </marker>
+    <style>
+      .box { fill:#edf2ff; stroke:#2b6cb0; stroke-width:2; rx:8; ry:8; }
+      .label { font: 16px/1.2 Inter, Arial, sans-serif; fill:#0f172a; font-weight:600; }
+      .sub { font: 12px/1.2 Inter, Arial, sans-serif; fill:#334155; }
+      .arrow { stroke:#2b6cb0; stroke-width:2.5; fill:none; marker-end:url(#arrow); }
+    </style>
+  </defs>
+
+  <!-- Boxes -->
+  <rect class="box" x="40"  y="40" width="180" height="90" />
+  <text class="label" x="130" y="68" text-anchor="middle">User Query</text>
+  <text class="sub" x="130" y="90" text-anchor="middle">Natural language</text>
+
+  <rect class="box" x="260" y="40" width="200" height="90" />
+  <text class="label" x="360" y="68" text-anchor="middle">Orchestrator Agent</text>
+  <text class="sub" x="360" y="90" text-anchor="middle">Parse intent & payload</text>
+
+  <rect class="box" x="490" y="40" width="200" height="90" />
+  <text class="label" x="590" y="68" text-anchor="middle">HubSpot Agent</text>
+  <text class="sub" x="590" y="90" text-anchor="middle">Perform CRM ops</text>
+
+  <rect class="box" x="720" y="40" width="180" height="90" />
+  <text class="label" x="810" y="68" text-anchor="middle">Email Agent</text>
+  <text class="sub" x="810" y="90" text-anchor="middle">Send notification</text>
+
+  <rect class="box" x="880" y="40" width="60" height="90" />
+  <text class="label" x="910" y="68" text-anchor="middle">End</text>
+
+  <!-- Arrows -->
+  <path class="arrow" d="M220 85 L260 85" />
+  <path class="arrow" d="M460 85 L490 85" />
+  <path class="arrow" d="M690 85 L720 85" />
+  <path class="arrow" d="M900 85 L880 85" transform="translate(0,0)"/>
+
+  <!-- Optional notes -->
+  <text class="sub" x="360" y="135" text-anchor="middle">Single LLM (Gemini) drives each agent</text>
+</svg>
 
 Detailed Component Flow
 1. Graph Building (LangGraph)
@@ -25,6 +62,7 @@ def build_graph():
     
     # Create state graph
     graph = StateGraph(nodes=nodes)
+    orchestrator_node, hubspot_node, email_node, error_handler_node
     
     # Define routing logic
     graph.add_edge("orchestrator", "hubspot")
@@ -42,7 +80,7 @@ def build_graph():
     return graph.compile()
 
 
- 2. Agent Components
+ 3. Agent Components
 Orchestrator Agent
 
 Parses natural language queries
@@ -209,4 +247,5 @@ Mailgun: mailgun_api_key, mailgun_domain
 You may alternatively set environment variables (recommended for secrets):
 GEMINI_API_KEY, HUBSPOT_API_KEY, SENDER_EMAIL, SMTP_*, MAILGUN_*
 The app uses utils.load_config which will prefer environment variables over config.json.
+
 
