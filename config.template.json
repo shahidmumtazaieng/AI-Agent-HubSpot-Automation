@@ -1,0 +1,22 @@
+{
+  "openai_api_key": "...",                
+  "hubspot_api_key": "...",
+  "email_provider": "smtp",
+  "gemini_api_key": "...",
+  "gemini_model": "gemini-2.5-flash",     
+  "gemini_temperature": 0.0,
+  "sender_email": "...",
+ 
+   
+   "smtp_host": "smtp.example.com",
+   "smtp_port": 587,
+   "smtp_username": "smtp-user@example.com",
+   "smtp_password": "your-smtp-password",
+   "smtp_use_tls": "true",
+ 
+ 
+   "mailgun_api_key": "...",
+   "mailgun_domain": "mg.example.com",
+ 
+   "neon_db_uri": "postgresql://user:pass@host/db?sslmode=require"
+}

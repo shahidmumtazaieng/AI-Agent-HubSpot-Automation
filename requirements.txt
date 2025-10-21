@@ -1,0 +1,14 @@
+langchain
+langgraph
+langgraph-checkpoint-postgres
+langchain-google-genai
+langchain-openai
+hubspot-api-client
+requests
+pytest
+pytest-mock
+python-dotenv
+tenacity
+black
+flake8
+pre-commit
