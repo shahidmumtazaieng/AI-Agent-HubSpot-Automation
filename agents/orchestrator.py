@@ -28,7 +28,7 @@ class OrchestratorAgent:
                 # Simulate parsing (expand with actual logic or sub-LLM call)
                 if "create contact" in query.lower():
                     intent = "create_contact"
-                    payload = {"properties": {"firstname": "John", "lastname": "Doe", "email": "john@example.com"}}  # Extract dynamically
+                    payload = {"properties": {"firstname": "John", "lastname": "Doe", "email": "metaisolpak@gmail.com"}}  # Extract dynamically
                 elif "update contact" in query.lower():
                     intent = "update_contact"
                     payload = {"id": "123", "properties": {"phone": "123-456-7890"}}

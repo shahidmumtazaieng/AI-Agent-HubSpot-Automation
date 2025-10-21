@@ -5,17 +5,15 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from langchain.tools import create_openai_tools_agent
 from langchain.agents import AgentExecutor
-
+from email.message import EmailMessage
+from mailjet_rest import Client
 import smtplib
 import ssl
-from email.message import EmailMessage
-import requests
-import os
 from utils import logger, load_config
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 class EmailAgent:
-    """Email Agent: Sends notifications via configurable provider (smtp or mailgun)."""
+    """Email Agent: Sends notifications via configurable provider (smtp or mailjet)."""
     
     def __init__(self, config: Dict[str, str]):
         # Use Gemini (ChatGoogleGenerativeAI) for all agent LLM calls
@@ -24,7 +22,7 @@ class EmailAgent:
             google_api_key=config['gemini_api_key'],
             temperature=float(config.get("gemini_temperature", 0.0))
         )
-        self.provider = config.get("email_provider", "smtp").lower()  # "smtp" or "mailgun"
+        self.provider = config.get("email_provider", "smtp").lower()  # "smtp" or "mailjet"
         self.config = config
         self.sender = config.get('sender_email')
         self.tools = self._define_tools()
@@ -67,31 +65,45 @@ class EmailAgent:
             logger.error(f"SMTP send failed: {e}")
             return {"success": False, "error": str(e)}
     
-    def _send_via_mailgun(self, to_email: str, subject: str, body: str) -> Dict[str, Any]:
-        """Send email using Mailgun HTTP API. Expects mailgun_domain and mailgun_api_key in config."""
+    def _send_via_mailjet(self, to_email: str, subject: str, body: str) -> Dict[str, Any]:
+        """Send email using Mailjet API. Expects mailjet_api_key and mailjet_api_secret in config."""
         try:
-            api_key = self.config.get("mailgun_api_key")
-            domain = self.config.get("mailgun_domain")
-            if not api_key or not domain:
-                raise ValueError("Mailgun config missing (mailgun_api_key/mailgun_domain).")
-            resp = requests.post(
-                f"https://api.mailgun.net/v3/{domain}/messages",
-                auth=("api", api_key),
-                data={
-                    "from": self.sender,
-                    "to": to_email,
-                    "subject": subject,
-                    "html": body
-                },
-                timeout=30
-            )
-            if resp.status_code in (200, 202):
-                logger.info(f"Mailgun: Email sent to {to_email}")
+            api_key = self.config.get("mailjet_api_key")
+            api_secret = self.config.get("mailjet_api_secret")
+            
+            if not api_key or not api_secret:
+                raise ValueError("Mailjet config missing (mailjet_api_key/mailjet_api_secret)")
+            
+            mailjet = Client(auth=(api_key, api_secret), version='v3.1')
+            
+            data = {
+                'Messages': [
+                    {
+                        "From": {
+                            "Email": self.sender,
+                            "Name": "HubSpot Automation"
+                        },
+                        "To": [
+                            {
+                                "Email": to_email
+                            }
+                        ],
+                        "Subject": subject,
+                        "HTMLPart": body
+                    }
+                ]
+            }
+            
+            result = mailjet.send.create(data=data)
+            
+            if result.status_code in (200, 201):
+                logger.info(f"Mailjet: Email sent to {to_email}")
                 return {"success": True}
             else:
-                raise ValueError(f"Mailgun error: {resp.status_code} {resp.text}")
+                raise ValueError(f"Mailjet error: {result.status_code} {result.json()}")
+                
         except Exception as e:
-            logger.error(f"Mailgun send failed: {e}")
+            logger.error(f"Mailjet send failed: {e}")
             return {"success": False, "error": str(e)}
 
     def _define_tools(self) -> List:
@@ -99,8 +111,8 @@ class EmailAgent:
         @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
         def send_notification(to_email: str, subject: str, body: str) -> Dict[str, Any]:
             """Send email notification (tool wrapper)."""
-            if self.provider == "mailgun":
-                return self._send_via_mailgun(to_email, subject, body)
+            if self.provider == "mailjet":
+                return self._send_via_mailjet(to_email, subject, body)
             else:
                 return self._send_via_smtp(to_email, subject, body)
         

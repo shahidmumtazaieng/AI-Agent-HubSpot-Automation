@@ -12,3 +12,4 @@ tenacity
 black
 flake8
 pre-commit
+mailjet_rest
